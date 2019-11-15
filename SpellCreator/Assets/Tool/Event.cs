@@ -19,18 +19,21 @@ namespace SpellCreator {
 
     /*
     Events should be saved as XML, preferably like this 
+    Events would later be saved as part of a spell
     (I think in this situation i can understand XML better than scriptable objects)
 
     <Event>
         <EventName> <Event/Name>
         <Action>
             <ActionName> </ActionName>
-            -any amount of variables depending on the Action
+            -any amount of required variables of the Action
             <Modifier>
                 <ModifierName>  </ModifierName> 
-                -any amount of variables depending on the Modifier
+                -any amount of variables of the Modifier
             </Modifier>
+            -More Modifiers
         </Action>
+        -More Actions
     </Event>
     */
 }

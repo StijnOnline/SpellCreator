@@ -4,15 +4,7 @@ using UnityEngine;
 
 public class Spell : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    //Detect things to trigger events:
+    //OnCollisionEnter -> OnHit
 
-    // Update is called once per frame
-    void Update()
-    {
-        
-    }
 }
