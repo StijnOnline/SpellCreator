@@ -81,9 +81,10 @@ namespace SpellCreator {
                 }
 
             }
-
-
-            xmlDocument.Save(Application.persistentDataPath + "/" + _event.name + ".xml");
+            
+            string directory = "Assets/Saved/";
+            if(!System.IO.Directory.Exists(directory)) { System.IO.Directory.CreateDirectory(directory); }
+            xmlDocument.Save(directory + _event.name + ".xml");
         }
     }
 }

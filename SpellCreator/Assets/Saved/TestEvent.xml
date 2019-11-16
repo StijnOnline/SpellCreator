@@ -1,0 +1,12 @@
+<Event>
+  <EventName>TestEvent</EventName>
+  <Action>
+    <ActionName>SpellCreator.Debug_Action</ActionName>
+    <debugText>Some Debug Text</debugText>
+    <Modifier>
+      <ModifierName>SpellCreator.Debug_Action+Debug_Type_Modifier DebugTypeModifier</ModifierName>
+      <DebugType>Warn</DebugType>
+      <enabled>False</enabled>
+    </Modifier>
+  </Action>
+</Event>
