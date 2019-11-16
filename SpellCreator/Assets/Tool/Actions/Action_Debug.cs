@@ -5,9 +5,6 @@ using UnityEngine;
 namespace SpellCreator {
     public class Debug_Action : Action {
         #region Modifiers
-        public class ExtraText_Modifier : Modifier {
-            public string extraText = "SomeExtraText";
-        }
 
         public class Debug_Type_Modifier : Modifier {
             public enum Debug_Type { Log, Warn, Error };
@@ -16,16 +13,14 @@ namespace SpellCreator {
 
         //etc.
 
-        public ExtraText_Modifier ExtraTextModifier = new ExtraText_Modifier();
         public Debug_Type_Modifier DebugTypeModifier = new Debug_Type_Modifier();
 
         #endregion
 
+        public string debugText = "Some Debug Text";
+
         public override void Act() {
-            string text = "Debug Action";
-            if(ExtraTextModifier.enabled) {
-                text += ": " + ExtraTextModifier.extraText;
-            }
+            string text = "Debug Action: " + debugText;
             
             if(DebugTypeModifier.enabled) {
                 switch(DebugTypeModifier.DebugType) {
@@ -39,6 +34,8 @@ namespace SpellCreator {
                         Debug.Log(text);
                         break;
                 }
+            } else {
+                Debug.Log(text);
             }
 
         }
