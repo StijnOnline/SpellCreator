@@ -9,7 +9,6 @@ namespace SpellCreator {
 
         public Event(string _name) {
             name = _name;
-            actions = new List<Action>();
         }
 
         public void AddAction(Action action) {

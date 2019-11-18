@@ -54,45 +54,36 @@ public class EventEditor : EditorWindow {
         GUILayout.EndHorizontal();
 
         GUILayout.Label("Path: " + EventSaver.DIR + editingEvent + ".xml");
-        
-        
+
+
         //Actions
-        GUILayout.Label("Actions", "boldLabel");        
-        int x = 110;
-        int windowID = 0;
-        BeginWindows();
+        EditorGUILayout.LabelField("", GUI.skin.horizontalSlider); //Used as divider
+        GUILayout.Label("Actions", "boldLabel");
+
+        HorizontalLine();
         if(editingEvent != null) {
             foreach(Action action in editingEvent.actions) {
-                GUILayout.Window(windowID++, new Rect(5, x, position.width - 10, 100), ActionWindow, action.GetType().Name);                
-                x += 105;
+                ActionWindow(action);                
             }
         }
 
         //Add Action
         if(!addActionClicked) {
-            if(GUI.Button(new Rect(5, x, position.width - 10, 20), "Add Action")) {
+            if(GUILayout.Button("Add Action")) {
                 addActionClicked = true;
             }
         } else {
-            GUILayout.Window(3, new Rect(5, x, position.width - 10, 60), AddActionWindow, "Add Action");
+            AddActionWindow();
         }
-
-
-
-        EndWindows();
-
-
-
     }
 
-    void ActionWindow(int unusedWindowID) {
-        GUILayout.Label(editingEvent.actions[unusedWindowID].GetType().Name);
-        //Reflection to get all variables
+    void ActionWindow(Action _action) {
+        GUILayout.Label(_action.GetType().Name);
+        HorizontalLine();
     }
 
-    void AddActionWindow(int unusedWindowID) {
-        var labelStyleButton = new GUIStyle();
-        labelStyleButton.border = new RectOffset();
+        void AddActionWindow() {
+        GUILayout.Label("Add Action", "boldLabel");
 
         int selected = 0;
         List<string> options = new List<string>();
@@ -113,7 +104,11 @@ public class EventEditor : EditorWindow {
             EventSaver.SaveEvent(editingEvent);
         }
         GUILayout.EndHorizontal();
+    }
 
-        GUI.DragWindow();
+    public static void HorizontalLine() {
+        GUILayout.Space(5);
+        EditorGUI.DrawRect(EditorGUILayout.GetControlRect(false, 2), Color.grey);
+        GUILayout.Space(5);
     }
 }
