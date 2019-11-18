@@ -2,6 +2,17 @@
   <Action>
     <ActionName>SpellCreator.Debug_Action</ActionName>
     <debugText>gfucdtghujivfphgulfdycdhsjhlrgtu</debugText>
+    <moredebugText>Some Debug Text</moredebugText>
+    <Modifier>
+      <ModifierName>SpellCreator.Debug_Action+Debug_Type_Modifier DebugTypeModifier</ModifierName>
+      <DebugType>Warn</DebugType>
+      <enabled>False</enabled>
+    </Modifier>
+  </Action>
+  <Action>
+    <ActionName>SpellCreator.Debug_Action</ActionName>
+    <debugText>Some Debug Text</debugText>
+    <moredebugText>Some Debug Text</moredebugText>
     <Modifier>
       <ModifierName>SpellCreator.Debug_Action+Debug_Type_Modifier DebugTypeModifier</ModifierName>
       <DebugType>Warn</DebugType>

@@ -8,7 +8,7 @@ namespace SpellCreator {
 
     public static class EventSaver {
 
-        private const string DIR = "Assets/Saved/";
+        public static string DIR = "Assets/Saved/";
 
         /* Description:
         // Events should be saved as XML, preferably like this 
@@ -56,7 +56,7 @@ namespace SpellCreator {
                         }
 
                     } else {//Is a Modifier
-                        //TODO: if enabled
+                            //TODO: if enabled
 
                         XmlNode modifierNode = xmlDocument.CreateElement("Modifier");
                         actionNode.AppendChild(modifierNode);
@@ -78,55 +78,41 @@ namespace SpellCreator {
 
                 }
 
+
             }
-            
-            
+
             if(!System.IO.Directory.Exists(DIR)) { System.IO.Directory.CreateDirectory(DIR); }
             xmlDocument.Save(DIR + _event.name + ".xml");
         }
 
-        public static Event LoadEvent(string fileName)
-        {
-            Event _loadedEvent = new Event(fileName);
+        public static Event LoadEvent(string fileName) {
+            Event _loadedEvent = new Event(fileName.Substring(0, fileName.Length - 4));
 
             XmlDocument xmlDocument = new XmlDocument();
-            xmlDocument.Load(DIR + fileName + ".xml");
+            xmlDocument.Load(DIR + fileName);
 
-            foreach (XmlNode action in xmlDocument.FirstChild.ChildNodes)
-            {
+            foreach(XmlNode action in xmlDocument.FirstChild.ChildNodes) {
 
-                Action newAction = null;                
+                Action newAction = null;
                 System.Type actionType = null;
                 actionType = System.Type.GetType(action.FirstChild.InnerText);
-                if (actionType == null) { break; }
+                if(actionType == null) { break; }
                 newAction = (Action)System.Activator.CreateInstance(actionType);
                 _loadedEvent.AddAction(newAction);
 
-                foreach (XmlNode actionInfo in action.ChildNodes)
-                {
-                    
-
-
-                    if (actionInfo.Name != "ActionName")
-                    {
-                        if (actionInfo.Name == "Modifier")
-                        {
-
-                        }
-                        else
-                        {
+                foreach(XmlNode actionInfo in action.ChildNodes) {
+                    if(actionInfo != actionInfo.FirstChild) {
+                        if(actionInfo.Name != "Modifier") {
                             //Reflection
-                            actionType.GetField(actionInfo.Name).SetValue(newAction, actionInfo.InnerText);
-
-
+                            actionType.GetField(actionInfo.Name)?.SetValue(newAction, actionInfo.InnerText);
+                        } else {
+                            foreach(XmlNode modifierInfo in actionInfo.ChildNodes) {
+                                //TODO: Modifier Logic
+                            }
                         }
                     }
-                    
-                    
-
-                    
                 }
-            }   
+            }
 
             return _loadedEvent;
         }

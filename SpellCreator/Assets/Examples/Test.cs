@@ -30,7 +30,7 @@ public class Test : MonoBehaviour {
 
 
 
-        SpellCreator.Event e = EventSaver.LoadEvent("TestEvent");
+        SpellCreator.Event e = EventSaver.LoadEvent("TestEvent.xml");
         e.Execute();
     }
 }
