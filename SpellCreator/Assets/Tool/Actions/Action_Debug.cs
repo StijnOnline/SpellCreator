@@ -12,12 +12,13 @@ namespace SpellCreator {
         }
 
         //etc.
-
-        public Debug_Type_Modifier DebugTypeModifier = new Debug_Type_Modifier();
+        
+        public Debug_Type_Modifier DebugTypeModifier = new Debug_Type_Modifier(); //TODO list
 
         #endregion
 
         public string debugText = "Some Debug Text";
+        public string moredebugText = "Some Debug Text";
 
         public override void Act() {
             string text = "Debug Action: " + debugText;

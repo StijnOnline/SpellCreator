@@ -7,7 +7,6 @@ using SpellCreator;
 public class EventEditor : EditorWindow {
 
     private bool createAction = false;
-    private static List<System.Type> subclasses = new List<System.Type>();
 
     [MenuItem("Window/Event Editor")]
     static void Init() {
@@ -15,18 +14,6 @@ public class EventEditor : EditorWindow {
 
         
         //window.Show();
-    }
-
-    void OnFocus() {
-        //Reflection: find all actions        
-        var assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
-        foreach(var assembly in assemblies) {
-            var types = assembly.GetTypes();
-            foreach(var type in types) {
-                if(type.IsSubclassOf(typeof(Action)))
-                    subclasses.Add(type);
-            }
-        }
     }
 
 
@@ -76,8 +63,9 @@ public class EventEditor : EditorWindow {
         labelStyleButton.border = new RectOffset();
 
         int selected = 0;
-        List<string> options = new List<string>();    
-        foreach(System.Type type in subclasses) {
+        List<string> options = new List<string>();
+        
+        foreach (System.Type type in ActionTracker.FindActions()) {
             options.Add(type.Name);
         }
         selected = EditorGUILayout.Popup("Action to Add", selected, options.ToArray());

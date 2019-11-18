@@ -8,6 +8,8 @@ namespace SpellCreator {
 
     public static class EventSaver {
 
+        private const string DIR = "Assets/Saved/";
+
         /* Description:
         // Events should be saved as XML, preferably like this 
         Events would later be saved as part of a spell
@@ -26,15 +28,11 @@ namespace SpellCreator {
             </Action>
             -More Actions
         </Event>
-        */    
+        */
         public static void SaveEvent(Event _event) {
             XmlDocument xmlDocument = new XmlDocument();
             XmlNode rootNode = xmlDocument.CreateElement("Event");
             xmlDocument.AppendChild(rootNode);
-
-            XmlNode eventNameNode = xmlDocument.CreateElement("EventName");
-            eventNameNode.InnerText = _event.name;
-            rootNode.AppendChild(eventNameNode);
 
             foreach(Action action in _event.actions) {
                 XmlNode actionNode = xmlDocument.CreateElement("Action");
@@ -82,9 +80,55 @@ namespace SpellCreator {
 
             }
             
-            string directory = "Assets/Saved/";
-            if(!System.IO.Directory.Exists(directory)) { System.IO.Directory.CreateDirectory(directory); }
-            xmlDocument.Save(directory + _event.name + ".xml");
+            
+            if(!System.IO.Directory.Exists(DIR)) { System.IO.Directory.CreateDirectory(DIR); }
+            xmlDocument.Save(DIR + _event.name + ".xml");
+        }
+
+        public static Event LoadEvent(string fileName)
+        {
+            Event _loadedEvent = new Event(fileName);
+
+            XmlDocument xmlDocument = new XmlDocument();
+            xmlDocument.Load(DIR + fileName + ".xml");
+
+            foreach (XmlNode action in xmlDocument.FirstChild.ChildNodes)
+            {
+
+                Action newAction = null;                
+                System.Type actionType = null;
+                actionType = System.Type.GetType(action.FirstChild.InnerText);
+                if (actionType == null) { break; }
+                newAction = (Action)System.Activator.CreateInstance(actionType);
+                _loadedEvent.AddAction(newAction);
+
+                foreach (XmlNode actionInfo in action.ChildNodes)
+                {
+                    
+
+
+                    if (actionInfo.Name != "ActionName")
+                    {
+                        if (actionInfo.Name == "Modifier")
+                        {
+
+                        }
+                        else
+                        {
+                            //Reflection
+                            actionType.GetField(actionInfo.Name).SetValue(newAction, actionInfo.InnerText);
+
+
+                        }
+                    }
+                    
+                    
+
+                    
+                }
+            }   
+
+            return _loadedEvent;
         }
     }
 }

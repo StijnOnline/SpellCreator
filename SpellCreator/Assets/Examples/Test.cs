@@ -6,8 +6,8 @@ using System.Reflection;
 
 public class Test : MonoBehaviour {
     public void Start() {
-        SpellCreator.Event testevent = new SpellCreator.Event("TestEvent");
-        Debug_Action testAction = new Debug_Action();
+        //SpellCreator.Event testevent = new SpellCreator.Event("TestEvent");
+        //Debug_Action testAction = new Debug_Action();
         /*
         //Editor and save/load system can access any variable via reflection
         PropertyInfo prop = testAction.DebugTypeModifier.GetType().GetProperty("enabled", BindingFlags.Public | BindingFlags.Instance);
@@ -22,10 +22,15 @@ public class Test : MonoBehaviour {
         NOT WORKING
         */
 
-        testevent.AddAction(testAction);
+        //testevent.AddAction(testAction);
 
-        EventSaver.SaveEvent(testevent);
+        //EventSaver.SaveEvent(testevent);
 
-        testevent.Execute();
+        //testevent.Execute();
+
+
+
+        SpellCreator.Event e = EventSaver.LoadEvent("TestEvent");
+        e.Execute();
     }
 }
