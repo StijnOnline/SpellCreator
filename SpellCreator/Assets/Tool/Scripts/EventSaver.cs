@@ -2,13 +2,19 @@
 using System.Collections.Generic;
 using System.Reflection;
 using System.Xml;
+using UnityEditor;
 using UnityEngine;
 
 namespace SpellCreator {
-    //todo change getfields to getproperties
+    //DO: Replace somethings:
+    //use getfields instead of getproperties to make saving easier? 
+    //less usefull for scriptableObject saving
+
     public static class EventSaver {
 
-        public static string DIR = "Assets/Saved/";
+        public static string SAVED_DATA_DIR = "Assets/Tool/Data/Saved/";
+        public static string TOOL_DATA_DIR = "Assets/Tool/Data/Tool/";
+        public static string TEMP_DATA_DIR = "Assets/Tool/Data/Temp/";
 
         /* Description:
         // Events should be saved as XML, preferably like this 
@@ -29,7 +35,15 @@ namespace SpellCreator {
             -More Actions
         </Event>
         */
-        public static void SaveEvent(Event _event) {
+        public static void SaveEventAsXML(Event _event) {
+            Debug.Log("Saving: " + _event.eventName);
+
+            if(_event == null) { Debug.LogError("Event to Save is null");return; }
+            if(_event.actions == null) {
+                Debug.LogWarning("Event to Save has no actions");
+                _event.actions = new List<Action>();
+            }
+
             XmlDocument xmlDocument = new XmlDocument();
             XmlNode rootNode = xmlDocument.CreateElement("Event");
             xmlDocument.AppendChild(rootNode);
@@ -39,12 +53,12 @@ namespace SpellCreator {
                 rootNode.AppendChild(actionNode);
 
                 XmlNode actionNameNode = xmlDocument.CreateElement("ActionName");
-                actionNameNode.InnerText = action.ToString();
+                actionNameNode.InnerText = action.name;
                 actionNode.AppendChild(actionNameNode);
 
                 //Using Reflection
                 FieldInfo[] fields = action.GetType().GetFields(BindingFlags.Public | BindingFlags.Instance);
-                XmlNode firstModifier = null; //Used for ordering the nodes
+                XmlNode firstModifier = null; //Used for the order of the nodes
                 foreach(FieldInfo field in fields) {
                     if(field.FieldType.BaseType != typeof(Modifier)) {//Is not a Modifier
                         XmlNode actionVarNode = xmlDocument.CreateElement(field.Name);
@@ -56,7 +70,7 @@ namespace SpellCreator {
                         }
 
                     } else {//Is a Modifier
-                            //TODO: if enabled
+                        //TODO: Add if statement
 
                         XmlNode modifierNode = xmlDocument.CreateElement("Modifier");
                         actionNode.AppendChild(modifierNode);
@@ -81,27 +95,32 @@ namespace SpellCreator {
 
             }
 
-            if(!System.IO.Directory.Exists(DIR)) { System.IO.Directory.CreateDirectory(DIR); }
-            xmlDocument.Save(DIR + _event.name + ".xml");
+            if(!System.IO.Directory.Exists(SAVED_DATA_DIR)) { System.IO.Directory.CreateDirectory(SAVED_DATA_DIR); }
+            xmlDocument.Save(SAVED_DATA_DIR + _event.eventName + ".xml");
         }
 
-        public static Event LoadEvent(string fileName) {
+        public static Event LoadEventAsXML(string fileName) {
+            Debug.Log("Attempting to Load: " + fileName);
+
             Event _loadedEvent = (SpellCreator.Event) ScriptableObject.CreateInstance(typeof(SpellCreator.Event));
-            _loadedEvent.name = fileName.Substring(0, fileName.Length - 4);
-            //Event _loadedEvent = new Event(fileName.Substring(0, fileName.Length - 4));
+            _loadedEvent.eventName = fileName;
+            _loadedEvent.name = _loadedEvent.eventName;
 
             XmlDocument xmlDocument = new XmlDocument();
-            xmlDocument.Load(DIR + fileName);
+            xmlDocument.Load(SAVED_DATA_DIR + fileName + ".xml");
 
             foreach(XmlNode action in xmlDocument.FirstChild.ChildNodes) {
 
                 Action newAction = null;
                 System.Type actionType = null;
-                actionType = System.Type.GetType(action.FirstChild.InnerText);
-                if(actionType == null) { break; }
-                //newAction = (Action)System.Activator.CreateInstance(actionType);
-                //newAction = (Action)ScriptableObject.CreateInstance(actionType);
-                newAction = (Action)ScriptableObjectUtility.CreateAsset < actionType> ();
+
+                newAction = (Action)AssetDatabase.LoadAssetAtPath(TOOL_DATA_DIR + action.FirstChild.InnerText + ".asset", typeof(Action));
+                if(newAction == null) {
+                    Debug.LogError("Could not load action: " + TOOL_DATA_DIR + action.FirstChild.InnerText);
+                }
+
+                actionType = newAction.GetType();
+                if(actionType == null) { Debug.LogError("Action Type Not Recognized: " + action.FirstChild.InnerText); break; }              
 
                 _loadedEvent.AddAction(newAction);
 
@@ -112,7 +131,7 @@ namespace SpellCreator {
                             actionType.GetField(actionInfo.Name)?.SetValue(newAction, actionInfo.InnerText);
                         } else {
                             foreach(XmlNode modifierInfo in actionInfo.ChildNodes) {
-                                //TODO: Modifier Logic
+                                //TODO: Modifier Loading Logic
                             }
                         }
                     }
@@ -120,6 +139,23 @@ namespace SpellCreator {
             }
 
             return _loadedEvent;
+        }
+
+        public static T CreateAsset<T>() where T : ScriptableObject {
+            T asset = ScriptableObject.CreateInstance<T>();
+
+            //string[] paths = Directory.GetFiles(Application.dataPath, "ScriptableObjectUtility.cs", SearchOption.AllDirectories);
+            //string path = paths[0].Replace(Application.dataPath, "");
+
+            //string path = 
+            //string assetPathAndName = AssetDatabase.GenerateUniqueAssetPath(path + "/New " + typeof(T).ToString() + ".asset");
+
+            AssetDatabase.CreateAsset(asset, SAVED_DATA_DIR);
+
+            //AssetDatabase.SaveAssets();
+            //AssetDatabase.Refresh();
+
+            return asset;
         }
     }
 }

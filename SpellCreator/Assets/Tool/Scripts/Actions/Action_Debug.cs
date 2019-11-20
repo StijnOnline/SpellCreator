@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace SpellCreator {
 
-    [CreateAssetMenu(fileName = "Action", menuName = "ScriptableObjects/Debug Action", order = 2)]
+    [CreateAssetMenu(fileName = "Debug Action", menuName = "Actions/Debug_Action", order = 1)]
     public class Debug_Action : Action {
         #region Modifiers
 

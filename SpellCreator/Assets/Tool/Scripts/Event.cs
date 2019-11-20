@@ -6,12 +6,9 @@ namespace SpellCreator {
     public class Event : ScriptableObject{
         public string eventName;
         public List<Action> actions = new List<Action>();
-
-        public Event(string _name) {
-            eventName = _name;
-        }
-
+        
         public void AddAction(Action action) {
+            //action = ScriptableObject.Instantiate(action);//make sure to create a new instance
             actions.Add(action);
         }
 
