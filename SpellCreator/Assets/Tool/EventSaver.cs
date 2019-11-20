@@ -5,7 +5,7 @@ using System.Xml;
 using UnityEngine;
 
 namespace SpellCreator {
-
+    //todo change getfields to getproperties
     public static class EventSaver {
 
         public static string DIR = "Assets/Saved/";

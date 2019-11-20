@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEditor;
 using SpellCreator;
 using System.IO;
+using System.Reflection;
 
 public class EventEditor : EditorWindow {
 
@@ -60,10 +61,10 @@ public class EventEditor : EditorWindow {
         EditorGUILayout.LabelField("", GUI.skin.horizontalSlider); //Used as divider
         GUILayout.Label("Actions", "boldLabel");
 
-        HorizontalLine();
+        HorizontalLine(5,2);
         if(editingEvent != null) {
             foreach(Action action in editingEvent.actions) {
-                ActionWindow(action);                
+                ActionWindow(action);           
             }
         }
 
@@ -79,7 +80,24 @@ public class EventEditor : EditorWindow {
 
     void ActionWindow(Action _action) {
         GUILayout.Label(_action.GetType().Name);
-        HorizontalLine();
+        HorizontalLine(0,1);
+
+        //Editor.CreateEditor(_action);
+
+
+        //Reflection
+        PropertyInfo[] properties = _action.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        foreach (PropertyInfo property in properties)
+        {
+            GUILayout.BeginHorizontal();
+            GUILayout.Label("Variable: " + property.Name);
+            GUILayout.EndHorizontal();
+        }
+
+
+
+
+        HorizontalLine(5,2);
     }
 
         void AddActionWindow() {
@@ -106,9 +124,9 @@ public class EventEditor : EditorWindow {
         GUILayout.EndHorizontal();
     }
 
-    public static void HorizontalLine() {
-        GUILayout.Space(5);
-        EditorGUI.DrawRect(EditorGUILayout.GetControlRect(false, 2), Color.grey);
-        GUILayout.Space(5);
+    public static void HorizontalLine(float padding, float height) {
+        GUILayout.Space(padding);
+        EditorGUI.DrawRect(EditorGUILayout.GetControlRect(false, height), Color.grey);
+        GUILayout.Space(padding);
     }
 }
