@@ -7,11 +7,11 @@ using System.IO;
 using System.Reflection;
 
 public class EventEditor : EditorWindow {
-
     private SpellCreator.Event editingEvent;
     private int selectedEvent = 0;
     private bool addActionClicked = false;
     string createEventText = "";
+    private Vector2 scrollPos = Vector2.zero;
 
     [MenuItem("Window/Event Editor")]
     static void Init() {
@@ -19,6 +19,10 @@ public class EventEditor : EditorWindow {
     }
 
     void OnGUI() {
+
+        scrollPos = GUILayout.BeginScrollView(scrollPos);
+
+
         GUILayout.Label("Event", "boldLabel");
 
         //Select Event
@@ -48,7 +52,10 @@ public class EventEditor : EditorWindow {
         createEventText = GUILayout.TextField(createEventText);
         if(GUILayout.Button("Create") && createEventText != "") {
             if(editingEvent != null) EventSaver.SaveEvent(editingEvent); // make sure to save old
-            editingEvent = new SpellCreator.Event(createEventText);
+            //editingEvent = new SpellCreator.Event(createEventText);
+            //editingEvent = (SpellCreator.Event)ScriptableObject.CreateInstance(typeof(SpellCreator.Event));
+            editingEvent = ScriptableObjectUtility.CreateAsset<SpellCreator.Event>();
+
             EventSaver.SaveEvent(editingEvent);
             createEventText = "";
         }
@@ -63,8 +70,13 @@ public class EventEditor : EditorWindow {
 
         HorizontalLine(5,2);
         if(editingEvent != null) {
-            foreach(Action action in editingEvent.actions) {
-                ActionWindow(action);           
+            if (editingEvent.actions != null)
+            {
+                Debug.Log(editingEvent.actions);
+                foreach (Action action in editingEvent.actions)
+                {
+                    ActionWindow(action);
+                }
             }
         }
 
@@ -76,23 +88,28 @@ public class EventEditor : EditorWindow {
         } else {
             AddActionWindow();
         }
+
+
+        GUILayout.EndScrollView();
+
     }
 
     void ActionWindow(Action _action) {
         GUILayout.Label(_action.GetType().Name);
         HorizontalLine(0,1);
 
-        //Editor.CreateEditor(_action);
+        Editor e = Editor.CreateEditor(_action);
+        e.OnInspectorGUI();
 
 
         //Reflection
-        PropertyInfo[] properties = _action.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
-        foreach (PropertyInfo property in properties)
-        {
-            GUILayout.BeginHorizontal();
-            GUILayout.Label("Variable: " + property.Name);
-            GUILayout.EndHorizontal();
-        }
+        //PropertyInfo[] properties = _action.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance);
+        //foreach (PropertyInfo property in properties)
+        //{
+        //    GUILayout.BeginHorizontal();
+        //    GUILayout.Label("Variable: " + property.Name);
+        //    GUILayout.EndHorizontal();
+        //}
 
 
 
@@ -117,7 +134,9 @@ public class EventEditor : EditorWindow {
         }
         if(GUILayout.Button("Add Action")) {
             addActionClicked = false;
-            Action newAction = (Action)System.Activator.CreateInstance(types[selected]);
+            //Action newAction = (Action)System.Activator.CreateInstance(types[selected]);
+            //Action newAction = (Action)ScriptableObject.CreateInstance(types[selected]);
+            Action newAction = (Action) ScriptableObjectUtility.CreateAsset<types[selected]>();
             editingEvent.AddAction(newAction);
             EventSaver.SaveEvent(editingEvent);
         }

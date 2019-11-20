@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace SpellCreator {
-    public class Event {
-        public string name;
+    public class Event : ScriptableObject{
+        public string eventName;
         public List<Action> actions = new List<Action>();
 
         public Event(string _name) {
-            name = _name;
+            eventName = _name;
         }
 
         public void AddAction(Action action) {

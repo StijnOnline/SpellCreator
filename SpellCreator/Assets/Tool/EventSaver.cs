@@ -86,7 +86,9 @@ namespace SpellCreator {
         }
 
         public static Event LoadEvent(string fileName) {
-            Event _loadedEvent = new Event(fileName.Substring(0, fileName.Length - 4));
+            Event _loadedEvent = (SpellCreator.Event) ScriptableObject.CreateInstance(typeof(SpellCreator.Event));
+            _loadedEvent.name = fileName.Substring(0, fileName.Length - 4);
+            //Event _loadedEvent = new Event(fileName.Substring(0, fileName.Length - 4));
 
             XmlDocument xmlDocument = new XmlDocument();
             xmlDocument.Load(DIR + fileName);
@@ -97,7 +99,10 @@ namespace SpellCreator {
                 System.Type actionType = null;
                 actionType = System.Type.GetType(action.FirstChild.InnerText);
                 if(actionType == null) { break; }
-                newAction = (Action)System.Activator.CreateInstance(actionType);
+                //newAction = (Action)System.Activator.CreateInstance(actionType);
+                //newAction = (Action)ScriptableObject.CreateInstance(actionType);
+                newAction = (Action)ScriptableObjectUtility.CreateAsset < actionType> ();
+
                 _loadedEvent.AddAction(newAction);
 
                 foreach(XmlNode actionInfo in action.ChildNodes) {

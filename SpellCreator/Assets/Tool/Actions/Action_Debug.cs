@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 
 namespace SpellCreator {
+
+    [CreateAssetMenu(fileName = "Action", menuName = "ScriptableObjects/Debug Action", order = 2)]
     public class Debug_Action : Action {
         #region Modifiers
 
