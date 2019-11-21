@@ -13,11 +13,19 @@ public class EventEditor : EditorWindow {
     private static bool addActionClicked = false;
     private static string createEventText = "";
     private static Vector2 scrollPos = Vector2.zero;
+    private static List<Action> removeActions = new List<Action>();
 
 
     [MenuItem("Window/Event Editor")]
     static void Init() {
         EventEditor window = (EventEditor)EditorWindow.GetWindow(typeof(EventEditor));
+    }
+
+    void Update() {
+        while(removeActions.Count > 0) {
+            editingEvent.RemoveAction(removeActions[0]);
+            removeActions.RemoveAt(0);
+        }
     }
 
     void OnGUI() {
@@ -36,33 +44,39 @@ public class EventEditor : EditorWindow {
 
             List<string> options = new List<string>();
 
-            foreach(FileInfo file in files) {
-                if(file.Extension == ".xml")
-                    options.Add(file.Name.Substring(0, file.Name.Length - 4));
+            //foreach(FileInfo file in files) {
+            //    if(file.Extension == ".xml")
+            //        options.Add(file.Name.Substring(0, file.Name.Length - 4));
+            //}
+
+            string[] guids = AssetDatabase.FindAssets("t:Event", new string[] { EventSaver.SAVED_DATA_DIR.TrimEnd('/') }); ;
+            foreach(string guid in guids) {
+                string assetPath = AssetDatabase.GUIDToAssetPath(guid);
+                options.Add(assetPath.Replace(EventSaver.SAVED_DATA_DIR, "").Replace(".asset", ""));
             }
+
+
 
             selectedEvent = EditorGUILayout.Popup("Event:", selectedEvent, options.ToArray());
 
             if(editingEvent == null) {
-                editingEvent = EventSaver.LoadEventAsXML(options[selectedEvent]);
+                editingEvent = EventSaver.LoadEventAsObject(options[selectedEvent]);
             } else if(editingEvent.eventName != options[selectedEvent]) {
-                editingEvent = EventSaver.LoadEventAsXML(options[selectedEvent]);
+                editingEvent = EventSaver.LoadEventAsObject(options[selectedEvent]);
             }
         }
 
 
-        if(editingEvent != null) GUILayout.Label("Path: " + EventSaver.SAVED_DATA_DIR + editingEvent.eventName + ".xml");
+        if(editingEvent != null) GUILayout.Label("Path: " + EventSaver.SAVED_DATA_DIR + editingEvent.eventName + ".asset");
 
         //Create Event
-        GUILayout.BeginHorizontal();
-        GUILayout.Label("New Event:");
-        createEventText = GUILayout.TextField(createEventText);
+        Separator(5, 2);
+        createEventText = EditorGUILayout.TextField("New Event:", createEventText);
         if(GUILayout.Button("Create") && createEventText != "") {
             CreateEvent(createEventText);
         }
-        GUILayout.EndHorizontal();
 
-        
+
 
 
         //Actions
@@ -74,7 +88,8 @@ public class EventEditor : EditorWindow {
         if(editingEvent != null) {
             if(editingEvent.actions != null) {
                 foreach(Action action in editingEvent.actions) {
-                    ActionWindow(action);
+                    if(action != null)
+                        ActionWindow(action);
                 }
             }
         }
@@ -85,20 +100,33 @@ public class EventEditor : EditorWindow {
                 addActionClicked = true;
             }
         } else {
-            AddActionWindow();
+            if(editingEvent.actions != null) {
+                AddActionWindow();
+            }
         }
 
 
         GUILayout.EndScrollView();
-
     }
 
     static void ActionWindow(Action _action) {
+        GUILayout.BeginHorizontal();
         GUILayout.Label(_action.GetType().Name);
+
+        GUIStyle removeButtonStyle = new GUIStyle(GUI.skin.GetStyle("button"));
+        removeButtonStyle.fixedWidth = 80f;
+
+        if(GUILayout.Button("Remove", removeButtonStyle)) {
+            removeActions.Add(_action);
+        }
+        GUILayout.EndHorizontal();
+
         Separator(0, 1);
 
         Editor e = Editor.CreateEditor(_action);
         e.OnInspectorGUI();
+
+
 
         //TODO: Create Modifier Editor
 
@@ -131,14 +159,15 @@ public class EventEditor : EditorWindow {
         if(GUILayout.Button("Add Action")) {
             addActionClicked = false;
             Action newAction = null;
-            
+
             newAction = (Action)AssetDatabase.LoadAssetAtPath(EventSaver.TOOL_DATA_DIR + options[selected] + ".asset", typeof(ScriptableObject));
             if(newAction == null) { Debug.LogError("Could not load asset at: " + EventSaver.TOOL_DATA_DIR + options[selected]); }
-            
-            editingEvent.AddAction(newAction);//FIX: create instance for editing, now two actions are the same
+
+            newAction = ScriptableObject.Instantiate(newAction);//DISCUSS: memory leak or auto-collected?
+            editingEvent.AddAction(newAction);
             Debug.Log("Created Action: " + newAction.ToString());
 
-            EventSaver.SaveEventAsXML(editingEvent);
+            EventSaver.SaveEventAsObject(editingEvent);
         }
         GUILayout.EndHorizontal();
     }
@@ -152,13 +181,15 @@ public class EventEditor : EditorWindow {
     }
     public static void CreateEvent(string _name) {
         if(editingEvent != null) {
-            if(editingEvent.eventName != null) EventSaver.SaveEventAsXML(editingEvent);// make sure to save old
-        }        
+            if(editingEvent.eventName != null) {
+                EventSaver.SaveEventAsObject(editingEvent);// make sure to save old
+            }
+        }
 
         editingEvent = ScriptableObject.CreateInstance<SpellCreator.Event>();
         editingEvent.eventName = _name;
 
-        EventSaver.SaveEventAsXML(editingEvent);
+        EventSaver.SaveEventAsObject(editingEvent);
         createEventText = "";
 
         //TODO Make the new event the selected event

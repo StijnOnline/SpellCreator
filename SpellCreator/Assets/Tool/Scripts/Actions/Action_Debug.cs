@@ -20,10 +20,10 @@ namespace SpellCreator {
         #endregion
 
         public string debugText = "Some Debug Text";
-        public string moredebugText = "Some Debug Text";
+        public float somenumber = 69.420f;
 
         public override void Act() {
-            string text = "Debug Action: " + debugText;
+            string text = "Debug Action: " + debugText + somenumber;
             
             if(DebugTypeModifier.enabled) {
                 switch(DebugTypeModifier.DebugType) {

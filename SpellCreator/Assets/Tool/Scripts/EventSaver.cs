@@ -6,6 +6,7 @@ using UnityEditor;
 using UnityEngine;
 
 namespace SpellCreator {
+
     //DO: Replace somethings:
     //use getfields instead of getproperties to make saving easier? 
     //less usefull for scriptableObject saving
@@ -14,7 +15,6 @@ namespace SpellCreator {
 
         public static string SAVED_DATA_DIR = "Assets/Tool/Data/Saved/";
         public static string TOOL_DATA_DIR = "Assets/Tool/Data/Tool/";
-        public static string TEMP_DATA_DIR = "Assets/Tool/Data/Temp/";
 
         /* Description:
         // Events should be saved as XML, preferably like this 
@@ -35,10 +35,39 @@ namespace SpellCreator {
             -More Actions
         </Event>
         */
+
+        public static void SaveEventAsObject(Event _event) {
+            Debug.Log("Saving: " + _event.eventName);
+
+            if(_event == null) { Debug.LogError("Event to Save is null"); return; }
+            if(_event.actions == null) {
+                Debug.LogWarning("Event to Save has no actions");
+                _event.actions = new List<Action>();
+            }
+
+            if(_event.actions != null) {
+                foreach(Action action in _event.actions) {
+                    if(action != null) {
+                        if(!AssetDatabase.Contains(action))
+                            AssetDatabase.CreateAsset(action, AssetDatabase.GenerateUniqueAssetPath(SAVED_DATA_DIR + action.name + ".asset"));
+                    }
+                }
+            }
+            if(!AssetDatabase.Contains(_event))
+                AssetDatabase.CreateAsset(_event, SAVED_DATA_DIR + _event.eventName + ".asset");
+        }
+
+        public static Event LoadEventAsObject(string fileName) {
+            return (Event)AssetDatabase.LoadAssetAtPath(SAVED_DATA_DIR + fileName + ".asset", typeof(Event));
+
+        }
+
+
+        [System.Obsolete("This method should no longer be used, use SaveEventAsObject()",true)]
         public static void SaveEventAsXML(Event _event) {
             Debug.Log("Saving: " + _event.eventName);
 
-            if(_event == null) { Debug.LogError("Event to Save is null");return; }
+            if(_event == null) { Debug.LogError("Event to Save is null"); return; }
             if(_event.actions == null) {
                 Debug.LogWarning("Event to Save has no actions");
                 _event.actions = new List<Action>();
@@ -99,10 +128,11 @@ namespace SpellCreator {
             xmlDocument.Save(SAVED_DATA_DIR + _event.eventName + ".xml");
         }
 
+        [System.Obsolete("This method should no longer be used, use LoadEventAsObject()", true)]
         public static Event LoadEventAsXML(string fileName) {
             Debug.Log("Attempting to Load: " + fileName);
 
-            Event _loadedEvent = (SpellCreator.Event) ScriptableObject.CreateInstance(typeof(SpellCreator.Event));
+            Event _loadedEvent = (SpellCreator.Event)ScriptableObject.CreateInstance(typeof(SpellCreator.Event));
             _loadedEvent.eventName = fileName;
             _loadedEvent.name = _loadedEvent.eventName;
 
@@ -113,22 +143,31 @@ namespace SpellCreator {
 
                 Action newAction = null;
                 System.Type actionType = null;
+                string actionName = action.FirstChild.InnerText;
+                actionName = actionName.Replace("(Clone)", "");
 
-                newAction = (Action)AssetDatabase.LoadAssetAtPath(TOOL_DATA_DIR + action.FirstChild.InnerText + ".asset", typeof(Action));
+                newAction = (Action)AssetDatabase.LoadAssetAtPath(TOOL_DATA_DIR + actionName + ".asset", typeof(Action));
                 if(newAction == null) {
-                    Debug.LogError("Could not load action: " + TOOL_DATA_DIR + action.FirstChild.InnerText);
+                    Debug.LogError("Could not load action: " + TOOL_DATA_DIR + actionName);
+                    return null;
                 }
 
                 actionType = newAction.GetType();
-                if(actionType == null) { Debug.LogError("Action Type Not Recognized: " + action.FirstChild.InnerText); break; }              
+                if(actionType == null) { Debug.LogError("Action Type Not Recognized: " + actionName); break; }
 
+                newAction = ScriptableObject.Instantiate(newAction);
                 _loadedEvent.AddAction(newAction);
 
                 foreach(XmlNode actionInfo in action.ChildNodes) {
                     if(actionInfo != actionInfo.FirstChild) {
-                        if(actionInfo.Name != "Modifier") {
+                        if(actionInfo.Name != "Modifier" && actionInfo.Name != "ActionName") {
                             //Reflection
-                            actionType.GetField(actionInfo.Name)?.SetValue(newAction, actionInfo.InnerText);
+
+                            //f i x more parsing types
+                            FieldInfo fieldinfo = actionType.GetField(actionInfo.Name);
+
+                            object o = System.Convert.ChangeType(actionInfo.InnerText, fieldinfo.FieldType);
+                            fieldinfo.SetValue(newAction, o);
                         } else {
                             foreach(XmlNode modifierInfo in actionInfo.ChildNodes) {
                                 //TODO: Modifier Loading Logic

@@ -8,8 +8,13 @@ namespace SpellCreator {
         public List<Action> actions = new List<Action>();
         
         public void AddAction(Action action) {
-            //action = ScriptableObject.Instantiate(action);//make sure to create a new instance
             actions.Add(action);
+        }
+
+
+        //FIX Removing an Action does not delete them from the folder
+        public void RemoveAction(Action action) {
+            actions.Remove(action);
         }
 
         public void Execute() {
