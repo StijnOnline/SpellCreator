@@ -12,6 +12,7 @@ public class Test : MonoBehaviour {
         //e.Execute();
 
         SpellCreator.Event ev = EventSaver.LoadEventAsObject(testeventname);
-        ev.Execute();
+        
+        StartCoroutine(ev.ExecuteCoRoutine());
     }
 }

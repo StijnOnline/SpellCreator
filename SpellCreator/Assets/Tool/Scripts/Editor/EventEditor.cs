@@ -10,6 +10,7 @@ public class EventEditor : EditorWindow {
 
     private static SpellCreator.Event editingEvent;
     private static int selectedEvent = 0;
+    private static int selectedNewAction = 0;
     private static bool addActionClicked = false;
     private static string createEventText = "";
     private static Vector2 scrollPos = Vector2.zero;
@@ -24,7 +25,11 @@ public class EventEditor : EditorWindow {
     void Update() {
         while(removeActions.Count > 0) {
             editingEvent.RemoveAction(removeActions[0]);
+
+            string pathToDelete = AssetDatabase.GetAssetPath(removeActions[0]);
+            AssetDatabase.DeleteAsset(pathToDelete);
             removeActions.RemoveAt(0);
+
         }
     }
 
@@ -144,14 +149,14 @@ public class EventEditor : EditorWindow {
 
         GUILayout.Label("Add Action", "boldLabel");
 
-        int selected = 0;
+
         List<string> options = new List<string>();
         List<System.Type> types = ActionTracker.FindActions();
 
         foreach(System.Type type in types) {
             options.Add(type.Name);
         }
-        selected = EditorGUILayout.Popup("Action to Add", selected, options.ToArray());
+        selectedNewAction = EditorGUILayout.Popup("Action to Add", selectedNewAction, options.ToArray());
         GUILayout.BeginHorizontal();
         if(GUILayout.Button("Cancel")) {
             addActionClicked = false;
@@ -160,8 +165,8 @@ public class EventEditor : EditorWindow {
             addActionClicked = false;
             Action newAction = null;
 
-            newAction = (Action)AssetDatabase.LoadAssetAtPath(EventSaver.TOOL_DATA_DIR + options[selected] + ".asset", typeof(ScriptableObject));
-            if(newAction == null) { Debug.LogError("Could not load asset at: " + EventSaver.TOOL_DATA_DIR + options[selected]); }
+            newAction = (Action)AssetDatabase.LoadAssetAtPath(EventSaver.TOOL_DATA_DIR + options[selectedNewAction] + ".asset", typeof(ScriptableObject));
+            if(newAction == null) { Debug.LogError("Could not load asset at: " + EventSaver.TOOL_DATA_DIR + options[selectedNewAction]); }
 
             newAction = ScriptableObject.Instantiate(newAction);//DISCUSS: memory leak or auto-collected?
             editingEvent.AddAction(newAction);

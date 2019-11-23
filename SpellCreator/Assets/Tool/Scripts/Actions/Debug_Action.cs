@@ -4,8 +4,9 @@ using UnityEngine;
 
 namespace SpellCreator {
 
-    [CreateAssetMenu(fileName = "Debug Action", menuName = "Actions/Debug_Action", order = 1)]
+    [CreateAssetMenu(fileName = "Debug_Action", menuName = "Actions/Debug_Action", order = 1)]
     public class Debug_Action : Action {
+        //FIX Modifiers as list
         #region Modifiers
 
         public class Debug_Type_Modifier : Modifier {
@@ -15,7 +16,7 @@ namespace SpellCreator {
 
         //etc.
         
-        public Debug_Type_Modifier DebugTypeModifier = new Debug_Type_Modifier(); //TODO list
+        private Debug_Type_Modifier DebugTypeModifier = new Debug_Type_Modifier(); //TODO list
 
         #endregion
 
