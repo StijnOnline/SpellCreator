@@ -19,7 +19,7 @@ namespace SpellCreator {
             actions.Remove(action);
         }
 
-        public IEnumerator ExecuteCoRoutine() {
+        public IEnumerator ExecuteCoRoutine(GameObject g) {
             finishedExecuting = false;
             foreach(Action action in actions) {
                 if(action.GetType() == typeof(Wait_Action)) {
@@ -27,7 +27,7 @@ namespace SpellCreator {
                     yield return new WaitForSeconds(wait.waitTime);
 
                 }else
-                action.Act();
+                action.Act(g);
             }
             finishedExecuting = true;
         }

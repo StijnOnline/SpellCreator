@@ -126,6 +126,8 @@ public class EventEditor : EditorWindow {
         }
         GUILayout.EndHorizontal();
 
+        //EditorGUILayout.HelpBox(_action.ActionToolTip, MessageType.Info);
+
         Separator(0, 1);
 
         Editor e = Editor.CreateEditor(_action);

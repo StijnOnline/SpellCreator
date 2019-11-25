@@ -23,7 +23,8 @@ namespace SpellCreator {
         public string debugText = "Some Debug Text";
         public float somenumber = 69.420f;
 
-        public override void Act() {
+        
+        public override void Act(GameObject g) {
             string text = "Debug Action: " + debugText + somenumber;
             
             if(DebugTypeModifier.enabled) {

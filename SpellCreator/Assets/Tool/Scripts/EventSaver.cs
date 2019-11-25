@@ -13,8 +13,8 @@ namespace SpellCreator {
 
     public static class EventSaver {
 
-        public static string SAVED_DATA_DIR = "Assets/Tool/Data/Saved/";
-        public static string TOOL_DATA_DIR = "Assets/Tool/Data/Tool/";
+        public const string SAVED_DATA_DIR = "Assets/Tool/Data/Saved/";
+        public const string TOOL_DATA_DIR = "Assets/Tool/Data/Tool/";
 
         /* Description:
         // Events should be saved as XML, preferably like this 

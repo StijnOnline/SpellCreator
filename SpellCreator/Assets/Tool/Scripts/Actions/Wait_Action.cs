@@ -10,7 +10,7 @@ namespace SpellCreator {
         
         public float waitTime = 1f;
 
-        public override void Act() {
+        public override void Act(GameObject g) {
             
         }
     }
