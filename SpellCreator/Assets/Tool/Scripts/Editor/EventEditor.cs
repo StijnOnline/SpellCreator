@@ -15,11 +15,16 @@ public class EventEditor : EditorWindow {
     private static string createEventText = "";
     private static Vector2 scrollPos = Vector2.zero;
     private static List<Action> removeActions = new List<Action>();
+    private static Texture2D upIcon;
+    private static Texture2D downIcon;
 
 
     [MenuItem("Window/Event Editor")]
     static void Init() {
+        upIcon = (Texture2D) AssetDatabase.LoadAssetAtPath("Tool/Icons/upIcon.png",typeof(Texture2D));
+        downIcon = (Texture2D) AssetDatabase.LoadAssetAtPath("Tool/Icons/downIcon.png", typeof(Texture2D));
         EventEditor window = (EventEditor)EditorWindow.GetWindow(typeof(EventEditor));
+        
     }
 
     void Update() {
@@ -117,6 +122,18 @@ public class EventEditor : EditorWindow {
     static void ActionWindow(Action _action) {
         GUILayout.BeginHorizontal();
         GUILayout.Label(_action.GetType().Name);
+
+        GUIStyle orderButtonStyle = new GUIStyle(GUI.skin.GetStyle("button"));
+        orderButtonStyle.fixedWidth = 30f;
+        if (GUILayout.Button(upIcon, orderButtonStyle))
+        {
+            Debug.Log("Up");
+        }
+        if (GUILayout.Button(downIcon, orderButtonStyle))
+        {
+            Debug.Log("Down");
+        }
+        GUILayout.FlexibleSpace();
 
         GUIStyle removeButtonStyle = new GUIStyle(GUI.skin.GetStyle("button"));
         removeButtonStyle.fixedWidth = 80f;

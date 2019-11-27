@@ -34,3 +34,9 @@ sysinfo.txt
 # Builds
 *.apk
 *.unitypackage
+SpellCreator/Assets/Examples/Particle System.prefab
+SpellCreator/Assets/Examples/New Physic Material.physicMaterial.meta
+SpellCreator/Assets/Examples/New Physic Material.physicMaterial
+SpellCreator/Assets/Examples/Explosion Particle.prefab.meta
+SpellCreator/Assets/Examples/Particle System.prefab.meta
+SpellCreator/Assets/Examples/Explosion Particle.prefab
