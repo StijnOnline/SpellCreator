@@ -11,8 +11,10 @@ GameObject:
   - component: {fileID: 7748746054328170588}
   - component: {fileID: 299808917599885266}
   - component: {fileID: 7041595871864664080}
+  - component: {fileID: 2286121506866634697}
+  - component: {fileID: 1504522383}
   m_Layer: 0
-  m_Name: Sphere (1)
+  m_Name: Fireball
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -78,3 +80,33 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
+--- !u!54 &2286121506866634697
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5463758080153652123}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 1
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!114 &1504522383
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5463758080153652123}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00c3f9650e7eb8945a904f1d89386ece, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OnCreated: {fileID: 11400000, guid: 9f2f9fa9b0acc2141b7367021d84e1d1, type: 2}
+  OnCollision: {fileID: 11400000, guid: 5de628eb0509e4847bf5233aa642300f, type: 2}

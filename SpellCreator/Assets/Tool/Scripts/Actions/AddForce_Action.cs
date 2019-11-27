@@ -17,7 +17,7 @@ namespace SpellCreator
             Rigidbody r =  g.GetComponent<Rigidbody>();
             if (r == null)
             {
-                Debug.LogWarning("Gameobject does not have a rigidbody");
+                Debug.LogWarning("AddForce Action: Gameobject does not have a rigidbody");
                 return;
             }
             Vector3 d = direction;

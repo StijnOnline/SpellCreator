@@ -99,7 +99,7 @@ namespace SpellCreator {
                         }
 
                     } else {//Is a Modifier
-                        //TODO: Add if statement
+                        //DO: Add if statement
 
                         XmlNode modifierNode = xmlDocument.CreateElement("Modifier");
                         actionNode.AppendChild(modifierNode);
@@ -170,7 +170,7 @@ namespace SpellCreator {
                             fieldinfo.SetValue(newAction, o);
                         } else {
                             foreach(XmlNode modifierInfo in actionInfo.ChildNodes) {
-                                //TODO: Modifier Loading Logic
+                                //DO: Modifier Loading Logic
                             }
                         }
                     }

@@ -45,14 +45,9 @@ public class EventEditor : EditorWindow {
         var files = directory.GetFiles();
 
         if(files.Length > 0) {
-            //TODO Move this outside OnGui()
+            //FIX Move this outside OnGui()
 
-            List<string> options = new List<string>();
-
-            //foreach(FileInfo file in files) {
-            //    if(file.Extension == ".xml")
-            //        options.Add(file.Name.Substring(0, file.Name.Length - 4));
-            //}
+            List<string> options = new List<string>();            
 
             string[] guids = AssetDatabase.FindAssets("t:Event", new string[] { EventSaver.SAVED_DATA_DIR.TrimEnd('/') }); ;
             foreach(string guid in guids) {
@@ -69,6 +64,7 @@ public class EventEditor : EditorWindow {
             } else if(editingEvent.eventName != options[selectedEvent]) {
                 editingEvent = EventSaver.LoadEventAsObject(options[selectedEvent]);
             }
+            //FIX Save selected to file for later
         }
 
 
@@ -199,6 +195,6 @@ public class EventEditor : EditorWindow {
         EventSaver.SaveEventAsObject(editingEvent);
         createEventText = "";
 
-        //TODO Make the new event the selected event
+        //FIX Make the new event the selected event
     }
 }

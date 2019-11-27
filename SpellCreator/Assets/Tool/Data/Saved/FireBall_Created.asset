@@ -9,8 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b254c2fe334d1634085391ae62e49665, type: 3}
-  m_Name: AddForce_Action(Clone)
+  m_Script: {fileID: 11500000, guid: dda4eb858eae65840b4f7229ce501c88, type: 3}
+  m_Name: FireBall_Created
   m_EditorClassIdentifier: 
-  direction: {x: 0, y: 0, z: 1000}
-  relative: 1
+  eventName: FireBall
+  actions:
+  - {fileID: 11400000, guid: a7b92c3127c930849817cb3c41f345fb, type: 2}
