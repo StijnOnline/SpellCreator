@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1e695a9170d07d42a1225d0ba82b3ec, type: 3}
   m_Name: Instantiate_Action(Clone)
   m_EditorClassIdentifier: 
-  prefab: {fileID: 5463758080153652123, guid: 3b1eb5f34858b2c469add8dff931a3bd, type: 3}
+  prefab: {fileID: 3776333498853117223, guid: 00d918211def230408aa80fbfce52e92, type: 3}
   position: {x: 0, y: 0, z: 0}
   rotation: {x: 0, y: 0, z: 0}
   relative: 1
   delete: 1
-  deleteDelay: 1
+  deleteDelay: 3

@@ -9,7 +9,8 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a6f217aa98f26a14e9b71c354ea41c6c, type: 3}
-  m_Name: Wait_Action(Clone)
+  m_Script: {fileID: 11500000, guid: dda4eb858eae65840b4f7229ce501c88, type: 3}
+  m_Name: FireBall_Hit
   m_EditorClassIdentifier: 
-  waitTime: 1
+  eventName: FireBall_Hit
+  actions: []
