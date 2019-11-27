@@ -14,28 +14,17 @@ public class EventEditor : EditorWindow {
     private static bool addActionClicked = false;
     private static string createEventText = "";
     private static Vector2 scrollPos = Vector2.zero;
-    private static List<Action> removeActions = new List<Action>();
-    private static Texture2D upIcon;
-    private static Texture2D downIcon;
+
+    private const string IconPath = "Assets/Tool/Icons/";
+    private static Texture upIcon;
+    private static Texture downIcon;
 
 
     [MenuItem("Window/Event Editor")]
     static void Init() {
-        upIcon = (Texture2D) AssetDatabase.LoadAssetAtPath("Tool/Icons/upIcon.png",typeof(Texture2D));
-        downIcon = (Texture2D) AssetDatabase.LoadAssetAtPath("Tool/Icons/downIcon.png", typeof(Texture2D));
+        upIcon = (Texture) AssetDatabase.LoadAssetAtPath(IconPath + "upIcon.png", typeof(Texture));
+        downIcon = (Texture) AssetDatabase.LoadAssetAtPath(IconPath + "downIcon.png", typeof(Texture));
         EventEditor window = (EventEditor)EditorWindow.GetWindow(typeof(EventEditor));
-        
-    }
-
-    void Update() {
-        while(removeActions.Count > 0) {
-            editingEvent.RemoveAction(removeActions[0]);
-
-            string pathToDelete = AssetDatabase.GetAssetPath(removeActions[0]);
-            AssetDatabase.DeleteAsset(pathToDelete);
-            removeActions.RemoveAt(0);
-
-        }
     }
 
     void OnGUI() {
@@ -95,7 +84,8 @@ public class EventEditor : EditorWindow {
             if(editingEvent.actions != null) {
                 foreach(Action action in editingEvent.actions) {
                     if(action != null)
-                        ActionWindow(action);
+                        if(ActionWindow(action))
+                            break;
                 }
             }
         }
@@ -115,19 +105,24 @@ public class EventEditor : EditorWindow {
         GUILayout.EndScrollView();
     }
 
-    static void ActionWindow(Action _action) {
+    //return true if collection is modified
+    static bool ActionWindow(Action _action) {
         GUILayout.BeginHorizontal();
         GUILayout.Label(_action.GetType().Name);
 
         GUIStyle orderButtonStyle = new GUIStyle(GUI.skin.GetStyle("button"));
-        orderButtonStyle.fixedWidth = 30f;
-        if (GUILayout.Button(upIcon, orderButtonStyle))
+        orderButtonStyle.fixedWidth = 20f;
+        orderButtonStyle.fixedHeight = 20f;
+
+        if (GUILayout.Button(new GUIContent(upIcon), orderButtonStyle))
         {
-            Debug.Log("Up");
+            MoveActionUp(editingEvent.actions.IndexOf(_action));
+            return true;
         }
         if (GUILayout.Button(downIcon, orderButtonStyle))
         {
-            Debug.Log("Down");
+            MoveActionUp(editingEvent.actions.IndexOf(_action) + 1);
+            return true;
         }
         GUILayout.FlexibleSpace();
 
@@ -135,7 +130,11 @@ public class EventEditor : EditorWindow {
         removeButtonStyle.fixedWidth = 80f;
 
         if(GUILayout.Button("Remove", removeButtonStyle)) {
-            removeActions.Add(_action);
+            editingEvent.RemoveAction(_action);
+
+            string pathToDelete = AssetDatabase.GetAssetPath(_action);
+            AssetDatabase.DeleteAsset(pathToDelete);
+            return true;
         }
         GUILayout.EndHorizontal();
 
@@ -151,6 +150,7 @@ public class EventEditor : EditorWindow {
         //TODO: Create Modifier Editor
 
         Separator(5, 2);
+        return false;
     }
 
     static void AddActionWindow() {
@@ -213,5 +213,14 @@ public class EventEditor : EditorWindow {
         createEventText = "";
 
         //FIX Make the new event the selected event
+    }
+
+    //to move an action down, pass the index + 1
+    public static void MoveActionUp(int index) {
+        if(index > 0 && index < editingEvent.actions.Count) {
+            Action tempAction = editingEvent.actions[index-1];
+            editingEvent.actions[index - 1] = editingEvent.actions[index];
+            editingEvent.actions[index] = tempAction;
+        }
     }
 }
