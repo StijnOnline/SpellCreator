@@ -185,6 +185,7 @@ public class EventEditor : EditorWindow {
             addActionClicked = false;
             Action newAction = null;
 
+            //TODO: automatically create the object?
             newAction = (Action)AssetDatabase.LoadAssetAtPath(EventSaver.TOOL_DATA_DIR + options[selectedNewAction] + ".asset", typeof(ScriptableObject));
             if(newAction == null) { Debug.LogError("Could not load asset at: " + EventSaver.TOOL_DATA_DIR + options[selectedNewAction]); }
 
@@ -205,9 +206,10 @@ public class EventEditor : EditorWindow {
 
     }
     public static void CreateEvent(string _name) {
+        // make sure to save old, shouldn't be neccessary anymore
         if(editingEvent != null) {
             if(editingEvent.eventName != null) {
-                EventSaver.SaveEventAsObject(editingEvent);// make sure to save old
+                EventSaver.SaveEventAsObject(editingEvent);
             }
         }
 

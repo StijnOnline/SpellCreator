@@ -63,7 +63,7 @@ namespace SpellCreator {
         }
 
 
-        [System.Obsolete("This method should no longer be used, use SaveEventAsObject()",true)]
+        [System.Obsolete("This method is no longer used and probably not fully functional",true)]
         public static void SaveEventAsXML(Event _event) {
             Debug.Log("Saving: " + _event.eventName);
 
@@ -128,7 +128,7 @@ namespace SpellCreator {
             xmlDocument.Save(SAVED_DATA_DIR + _event.eventName + ".xml");
         }
 
-        [System.Obsolete("This method should no longer be used, use LoadEventAsObject()", true)]
+        [System.Obsolete("This method is no longer used and probably not fully functional", true)]
         public static Event LoadEventAsXML(string fileName) {
             Debug.Log("Attempting to Load: " + fileName);
 
