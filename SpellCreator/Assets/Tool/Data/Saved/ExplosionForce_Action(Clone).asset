@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: ExplosionForce_Action(Clone)
   m_EditorClassIdentifier: 
   explosionOffset: {x: 0, y: 0, z: 0}
-  explosionRange: 100
-  explosionForce: 500
-  upwardModifier: 1.2
+  explosionRange: 10
+  explosionForce: 400
+  upwardModifier: 2
   layermask:
     serializedVersion: 2
     m_Bits: 4294967295

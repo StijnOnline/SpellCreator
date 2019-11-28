@@ -8,11 +8,13 @@ public class Projectile : MonoBehaviour
     public SpellCreator.Event OnCollision;
 
     public void Start() {
+        if(OnCreated != null)
         StartCoroutine( OnCreated.ExecuteCoRoutine(gameObject));
     }
 
     public void OnCollisionEnter(Collision collision) {
-        StartCoroutine(OnCollision.ExecuteCoRoutine(gameObject));        
+        if(OnCollision != null)
+            StartCoroutine(OnCollision.ExecuteCoRoutine(gameObject));        
     }
     
 }

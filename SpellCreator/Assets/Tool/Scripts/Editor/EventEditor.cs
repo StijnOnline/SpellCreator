@@ -28,6 +28,11 @@ public class EventEditor : EditorWindow {
     }
 
     void OnGUI() {
+        if (upIcon == null)
+            upIcon = (Texture)AssetDatabase.LoadAssetAtPath(IconPath + "upIcon.png", typeof(Texture));
+        if(downIcon == null)
+            downIcon = (Texture)AssetDatabase.LoadAssetAtPath(IconPath + "downIcon.png", typeof(Texture));
+
 
         scrollPos = GUILayout.BeginScrollView(scrollPos);
 
