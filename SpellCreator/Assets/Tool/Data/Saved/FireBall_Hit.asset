@@ -13,4 +13,7 @@ MonoBehaviour:
   m_Name: FireBall_Hit
   m_EditorClassIdentifier: 
   eventName: FireBall_Hit
-  actions: []
+  actions:
+  - {fileID: 11400000, guid: 68f1d1fd3d3924a41bbbb1e969de2796, type: 2}
+  - {fileID: 11400000, guid: 40e6849db265e244ebfe84a356913f04, type: 2}
+  - {fileID: 11400000, guid: f156f6fa693eb754bacd92991593f0a5, type: 2}
